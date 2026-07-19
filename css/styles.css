@@ -804,6 +804,13 @@ section {
   border: 1px solid var(--border);
 }
 
+.compare-footnote {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
 .compare-table {
   width: 100%;
   border-collapse: collapse;
@@ -1181,6 +1188,115 @@ footer {
   font-size: 14px;
 }
 
+
+.toc {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 900;
+}
+
+.toc-toggle,
+.scroll-top {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-main);
+  font-size: 18px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.toc-toggle:hover,
+.scroll-top:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.toc-toggle[aria-expanded="true"] {
+  background: var(--primary);
+  color: #fff;
+}
+
+.toc-panel {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 12px);
+  width: 220px;
+  max-width: calc(100vw - 48px);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-hover);
+  padding: 12px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toc-panel.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.toc-panel-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 4px 12px 8px;
+}
+
+.toc-list li a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-left: 2px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.toc-list li a:hover {
+  background: var(--surface);
+  color: var(--text-main);
+}
+
+.toc-list li a.active {
+  color: var(--primary);
+  font-weight: 700;
+  border-left-color: var(--primary);
+  background: rgba(37, 99, 235, 0.06);
+}
+
+
+.scroll-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 900;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 @media (max-width: 1024px) {
   .hero .container {
     grid-template-columns: 1fr;
@@ -1285,5 +1401,19 @@ footer {
     flex-direction: column;
     gap: 16px;
     text-align: center;
+  }
+  .toc {
+    left: 16px;
+    bottom: 16px;
+  }
+  .scroll-top {
+    right: 16px;
+    bottom: 16px;
+  }
+  .toc-toggle,
+  .scroll-top {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
   }
 }

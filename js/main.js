@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
   initSmoothScroll();
   initNewsletterForm();
+  initTableOfContents();
+  initScrollTop();
 });
 
 function initFaqAccordion() {
@@ -76,5 +78,94 @@ function initSmoothScroll() {
         target.scrollIntoView({ behavior: 'smooth' });
       }
     });
+  });
+}
+
+function initTableOfContents() {
+  const toggle = document.getElementById('tocToggle');
+  const panel = document.getElementById('tocPanel');
+  if (!toggle || !panel) return;
+
+  const setOpen = (isOpen) => {
+    panel.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  };
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setOpen(!panel.classList.contains('open'));
+  });
+
+  panel.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => setOpen(false));
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!panel.contains(e.target) && e.target !== toggle) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  initScrollSpy();
+}
+
+function initScrollSpy() {
+  const links = document.querySelectorAll('#tocList a[data-toc-target]');
+  if (!links.length) return;
+
+  const linkByTargetId = new Map();
+  links.forEach(link => linkByTargetId.set(link.dataset.tocTarget, link));
+
+  const sections = Array.from(linkByTargetId.keys())
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  const setActive = (id) => {
+    links.forEach(link => link.classList.remove('active'));
+    const activeLink = linkByTargetId.get(id);
+    if (activeLink) activeLink.classList.add('active');
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+    if (visible.length > 0) {
+      setActive(visible[0].target.id);
+    }
+  }, {
+
+    rootMargin: '-15% 0px -70% 0px',
+    threshold: 0,
+  });
+
+  sections.forEach(section => observer.observe(section));
+}
+
+function initScrollTop() {
+  const button = document.getElementById('scrollTop');
+  if (!button) return;
+
+  let ticking = false;
+
+  const updateVisibility = () => {
+    button.classList.toggle('visible', window.scrollY > 600);
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateVisibility);
+      ticking = true;
+    }
+  });
+
+  button.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
