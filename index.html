@@ -89,15 +89,16 @@
       <div class="glass-card glass-card-1">
         <div class="glass-card-title">Connection Status</div>
         <div class="glass-card-value">
-          <div class="status-dot"></div>
-          Encrypted
+          <span class="status-dot"></span>
+          <span id="connectionStatus">Encrypted</span>
+          <span class="status-ping" id="pingDisplay">· 12ms</span>
         </div>
       </div>
       <div class="glass-card glass-card-2">
         <div class="glass-card-title">Virtual Location</div>
         <div class="glass-card-value">
           <i class="fa-solid fa-location-dot"></i>
-          Zurich, Switzerland
+          <span id="virtualLocation">Zurich, Switzerland</span>
         </div>
       </div>
     </div>
@@ -150,7 +151,7 @@
         </div>
         <div class="card-actions">
           <a href="https://protonvpn.com/" class="btn btn-primary" target="_blank" rel="noopener">Get ProtonVPN Free</a>
-          <a href="#" class="link-review">Read Full Review</a>
+          <button type="button" class="link-review" data-review="protonvpn">Read Full Review</button>
         </div>
       </div>
     </div>
@@ -173,7 +174,7 @@
       </div>
       <div class="card-actions">
         <a href="https://surfshark.com/" class="btn btn-outline" target="_blank" rel="noopener">Try Surfshark Unlimited</a>
-        <a href="#" class="link-review">Read Full Review</a>
+        <button type="button" class="link-review" data-review="surfshark">Read Full Review</button>
       </div>
     </div>
     
@@ -195,11 +196,26 @@
       </div>
       <div class="card-actions">
         <a href="https://nordvpn.com/" class="btn btn-outline" target="_blank" rel="noopener">Explore NordVPN Servers</a>
-        <a href="#" class="link-review">Read Full Review</a>
+        <button type="button" class="link-review" data-review="nordvpn">Read Full Review</button>
       </div>
     </div>
   </div>
 </section>
+
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 id="modalTitle">Full Review</h2>
+      <button type="button" class="modal-close" id="modalClose" aria-label="Close review modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+</div>
 
 <section class="container" id="spotlight">
   <div class="section-header">
@@ -319,7 +335,7 @@
         <div class="featured-review">
           <div class="review-content">
             <div class="review-meta">
-              <div class="badge badge-gold">Best for Open-Source Trust</div>
+              <div class="badge badge-purple">Best for Open-Source Trust</div>
             </div>
             <h3>PIA: audited three times, tested in court</h3>
             <p class="review-intro">Fully open-source apps you can inspect yourself, three separate Deloitte audits, and a no-logs claim that already survived a real federal subpoena — not just a promise on a landing page.</p>
@@ -493,9 +509,6 @@
     </div>
   </div>
 </section>
-<!-- ============================================================= -->
-<!-- END IN-DEPTH COMPARISON                                        -->
-<!-- ============================================================= -->
 
 <section class="container section-panel" id="methodology">
   <div class="section-header">

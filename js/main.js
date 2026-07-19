@@ -1,18 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-  initFaqAccordion();
-  initMobileNav();
-  initSmoothScroll();
-  initNewsletterForm();
-  initTableOfContents();
-  initScrollTop();
-  initBenefitCarousel();
-});
-
-function initFaqAccordion() {
+document.addEventListener('DOMContentLoaded', function() {
   const accordionHeaders = document.querySelectorAll('.accordion-header');
   accordionHeaders.forEach(header => {
-    header.addEventListener('click', () => {
-      const item = header.parentElement;
+    header.addEventListener('click', function() {
+      const item = this.parentElement;
       const isActive = item.classList.contains('active');
       document.querySelectorAll('.accordion-item').forEach(accItem => {
         accItem.classList.remove('active');
@@ -20,50 +10,46 @@ function initFaqAccordion() {
       });
       if (!isActive) {
         item.classList.add('active');
-        header.setAttribute('aria-expanded', 'true');
+        this.setAttribute('aria-expanded', 'true');
       }
     });
   });
-}
 
-function initMobileNav() {
   const navToggle = document.getElementById('navToggle');
   const nav = document.getElementById('primaryNav');
-  if (!navToggle || !nav) return;
-  navToggle.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', String(isOpen));
-    navToggle.querySelector('i').className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
-  });
-  nav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      navToggle.setAttribute('aria-expanded', 'false');
-      navToggle.querySelector('i').className = 'fa-solid fa-bars';
+  if (navToggle && nav) {
+    navToggle.addEventListener('click', function() {
+      const isOpen = nav.classList.toggle('open');
+      this.setAttribute('aria-expanded', String(isOpen));
+      this.querySelector('i').className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
     });
-  });
-}
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        nav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.querySelector('i').className = 'fa-solid fa-bars';
+      });
+    });
+  }
 
-function initNewsletterForm() {
-  const form = document.querySelector('.newsletter-form');
-  if (!form) return;
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const button = form.querySelector('button');
-    const originalLabel = button.textContent;
-    button.textContent = 'Subscribed!';
-    button.disabled = true;
-    form.querySelector('input').value = '';
-    setTimeout(() => {
-      button.textContent = originalLabel;
-      button.disabled = false;
-    }, 2500);
-  });
-}
+  const newsForm = document.querySelector('.newsletter-form');
+  if (newsForm) {
+    newsForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('button');
+      const orig = btn.textContent;
+      btn.textContent = 'Subscribed!';
+      btn.disabled = true;
+      this.querySelector('input').value = '';
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.disabled = false;
+      }, 2500);
+    });
+  }
 
-function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+    anchor.addEventListener('click', function(e) {
       const targetId = this.getAttribute('href');
       const target = document.querySelector(targetId);
       if (target) {
@@ -72,92 +58,206 @@ function initSmoothScroll() {
       }
     });
   });
-}
 
-function initTableOfContents() {
-  const toggle = document.getElementById('tocToggle');
-  const panel = document.getElementById('tocPanel');
-  if (!toggle || !panel) return;
-  const setOpen = (isOpen) => {
-    panel.classList.toggle('open', isOpen);
-    toggle.setAttribute('aria-expanded', String(isOpen));
-  };
-  toggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    setOpen(!panel.classList.contains('open'));
-  });
-  panel.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => setOpen(false));
-  });
-  document.addEventListener('click', (e) => {
-    if (!panel.contains(e.target) && e.target !== toggle) {
-      setOpen(false);
-    }
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
-  });
-  initScrollSpy();
-}
+  const tocToggle = document.getElementById('tocToggle');
+  const tocPanel = document.getElementById('tocPanel');
+  if (tocToggle && tocPanel) {
+    tocToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isOpen = tocPanel.classList.toggle('open');
+      this.setAttribute('aria-expanded', String(isOpen));
+    });
+    tocPanel.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        tocPanel.classList.remove('open');
+        tocToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('click', function(e) {
+      if (!tocPanel.contains(e.target) && e.target !== tocToggle) {
+        tocPanel.classList.remove('open');
+        tocToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        tocPanel.classList.remove('open');
+        tocToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
-function initScrollSpy() {
-  const links = document.querySelectorAll('#tocList a[data-toc-target]');
-  if (!links.length) return;
-  const linkByTargetId = new Map();
-  links.forEach(link => linkByTargetId.set(link.dataset.tocTarget, link));
-  const sections = Array.from(linkByTargetId.keys()).map(id => document.getElementById(id)).filter(Boolean);
-  const setActive = (id) => {
-    links.forEach(link => link.classList.remove('active'));
-    const activeLink = linkByTargetId.get(id);
-    if (activeLink) activeLink.classList.add('active');
-  };
-  const observer = new IntersectionObserver((entries) => {
-    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-    if (visible.length > 0) setActive(visible[0].target.id);
-  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
-  sections.forEach(section => observer.observe(section));
-}
+  const tocLinks = document.querySelectorAll('#tocList a[data-toc-target]');
+  if (tocLinks.length) {
+    const linkMap = new Map();
+    tocLinks.forEach(link => linkMap.set(link.dataset.tocTarget, link));
+    const sections = Array.from(linkMap.keys()).map(id => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver(function(entries) {
+      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length > 0) {
+        const id = visible[0].target.id;
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const active = linkMap.get(id);
+        if (active) active.classList.add('active');
+      }
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => observer.observe(s));
+  }
 
-function initScrollTop() {
-  const button = document.getElementById('scrollTop');
-  if (!button) return;
-  let ticking = false;
-  const updateVisibility = () => {
-    button.classList.toggle('visible', window.scrollY > 600);
-    ticking = false;
-  };
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(updateVisibility);
-      ticking = true;
-    }
-  });
-  button.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-}
+  const scrollBtn = document.getElementById('scrollTop');
+  if (scrollBtn) {
+    window.addEventListener('scroll', function() {
+      scrollBtn.classList.toggle('visible', window.scrollY > 600);
+    });
+    scrollBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 
-function initBenefitCarousel() {
   const carousel = document.getElementById('benefitCarousel');
   const track = document.getElementById('benefitTrack');
   const prevBtn = document.getElementById('carouselPrev');
   const nextBtn = document.getElementById('carouselNext');
-  const dots = Array.from(document.querySelectorAll('.carousel-dot'));
-  if (!carousel || !track || !dots.length) return;
-  const slideCount = dots.length;
-  let currentIndex = 0;
-  const goTo = (index) => {
-    currentIndex = (index + slideCount) % slideCount;
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-    dots.forEach((dot, i) => {
-      const isActive = i === currentIndex;
-      dot.classList.toggle('active', isActive);
-      dot.setAttribute('aria-selected', String(isActive));
+  const dots = document.querySelectorAll('.carousel-dot');
+  if (carousel && track && dots.length) {
+    const slideCount = dots.length;
+    let current = 0;
+    function goTo(index) {
+      current = (index + slideCount) % slideCount;
+      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      dots.forEach(function(dot, i) {
+        dot.classList.toggle('active', i === current);
+        dot.setAttribute('aria-selected', String(i === current));
+      });
+    }
+    prevBtn.addEventListener('click', function() { goTo(current - 1); });
+    nextBtn.addEventListener('click', function() { goTo(current + 1); });
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() { goTo(i); });
     });
-  };
-  prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
-  nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
-  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
-  carousel.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') goTo(currentIndex + 1);
-    if (e.key === 'ArrowLeft') goTo(currentIndex - 1);
-  });
-}
+    carousel.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    });
+  }
+
+  const modal = document.getElementById('reviewModal');
+  const modalClose = document.getElementById('modalClose');
+  const modalBody = document.getElementById('modalBody');
+  const modalTitle = document.getElementById('modalTitle');
+
+  if (modal && modalClose && modalBody && modalTitle) {
+    const reviewData = {
+      protonvpn: {
+        title: 'ProtonVPN Full Review',
+        rating: '9.6',
+        stars: '★★★★½',
+        badge: 'Editor\'s Choice 2026',
+        badgeClass: 'badge-gold',
+        description: '<p><strong>ProtonVPN</strong> is the most transparent VPN on the market. Built by the team behind Proton Mail, this service is fully open-source and has been independently audited by security professionals.</p><p>What sets ProtonVPN apart is its commitment to privacy. The company is based in Switzerland, which has some of the strongest privacy laws in the world and sits outside the 14 Eyes intelligence-sharing alliance.</p><p>The free tier is genuinely free — no time limits, no credit card required, and no ads. You get unlimited bandwidth with access to servers in 3 countries, making it the only truly free VPN worth recommending.</p>',
+        pros: ['Fully open-source and independently audited', 'Genuine free tier with no time limits', 'Swiss jurisdiction, outside 14 Eyes', 'Strong commitment to privacy and transparency'],
+        cons: ['Free tier has limited server selection', 'Fewer servers than some competitors'],
+        ctaLink: 'https://protonvpn.com/',
+        ctaLabel: 'Get ProtonVPN Free'
+      },
+      surfshark: {
+        title: 'Surfshark Full Review',
+        rating: '9.3',
+        stars: '★★★★½',
+        badge: 'Best for Families',
+        badgeClass: 'badge-blue',
+        description: '<p><strong>Surfshark</strong> is the best choice for households with many devices. It\'s the only premium VPN that offers truly unlimited simultaneous connections — one subscription covers every device in your home.</p><p>Privacy is taken seriously here too. The no-logs policy has been independently audited <strong>twice</strong> by Deloitte, one of the Big Four accounting firms. This means you can trust that your data isn\'t being stored or sold.</p><p>At just $1.99/month on the long-term plan, it\'s also the most affordable option among the top-tier VPNs.</p>',
+        pros: ['Unlimited simultaneous devices', 'No-logs policy audited twice by Deloitte', 'Cheapest long-term pricing', 'Clean Web feature blocks ads and malware'],
+        cons: ['Based in the Netherlands (14 Eyes)', 'Newer service with less track record'],
+        ctaLink: 'https://surfshark.com/',
+        ctaLabel: 'Try Surfshark Unlimited'
+      },
+      nordvpn: {
+        title: 'NordVPN Full Review',
+        rating: '9.1',
+        stars: '★★★★☆',
+        badge: 'Largest Server Network',
+        badgeClass: 'badge-green',
+        description: '<p><strong>NordVPN</strong> operates the largest server network of any VPN, with over 9,400 servers in 224+ locations worldwide. This means you\'re almost always able to find a fast server close to your physical location.</p><p>The company developed its own WireGuard-based protocol called NordLynx, which is designed to maximize speed while maintaining strong encryption. This makes NordVPN one of the fastest options available.</p><p>NordVPN is based in Panama, a privacy-friendly jurisdiction outside the 14 Eyes alliance, and has undergone independent security audits.</p>',
+        pros: ['9,400+ servers in 224+ locations', 'NordLynx protocol for maximum speed', 'Panama jurisdiction, outside 14 Eyes', 'Double VPN and Onion Over VPN options'],
+        cons: ['10 device limit per account', 'Slightly more expensive than Surfshark'],
+        ctaLink: 'https://nordvpn.com/',
+        ctaLabel: 'Explore NordVPN Servers'
+      }
+    };
+
+    function openModal(key) {
+      const data = reviewData[key];
+      if (!data) return;
+      modalTitle.textContent = data.title;
+      modalBody.innerHTML = `
+        <div class="review-meta">
+          <span class="badge ${data.badgeClass}">${data.badge}</span>
+        </div>
+        <div class="review-rating">
+          <span class="score">${data.rating}</span>
+          <span class="stars">${data.stars}</span>
+          <span style="color: var(--text-muted); font-size: 14px;">Outstanding</span>
+        </div>
+        <div class="review-detail-title">${data.title}</div>
+        <div class="review-detail-text">${data.description}</div>
+        <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">What We Like</h4>
+        <ul class="review-detail-list">
+          ${data.pros.map(p => `<li><span class="check">✓</span> ${p}</li>`).join('')}
+        </ul>
+        <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">Things to Consider</h4>
+        <ul class="review-detail-list">
+          ${data.cons.map(c => `<li><span class="cross">✗</span> ${c}</li>`).join('')}
+        </ul>
+        <div class="review-cta">
+          <a href="${data.ctaLink}" class="btn btn-primary" target="_blank" rel="noopener">${data.ctaLabel}</a>
+          <button type="button" class="btn btn-secondary" id="modalCloseInner">Close Review</button>
+        </div>
+      `;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('modalCloseInner').addEventListener('click', closeModal);
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-review]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        openModal(this.getAttribute('data-review'));
+      });
+    });
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    });
+  }
+
+  const statusEl = document.getElementById('connectionStatus');
+  const pingEl = document.getElementById('pingDisplay');
+  const locationEl = document.getElementById('virtualLocation');
+
+  if (statusEl && pingEl && locationEl) {
+    const locations = ['Zurich, Switzerland', 'Berlin, Germany', 'Singapore, SG', 'Tokyo, Japan', 'London, UK', 'New York, US', 'Amsterdam, NL'];
+    let ping = 12;
+    setInterval(function() {
+      ping = Math.floor(Math.random() * 20) + 5;
+      pingEl.textContent = '· ' + ping + 'ms';
+      if (Math.random() < 0.08) {
+        locationEl.textContent = locations[Math.floor(Math.random() * locations.length)];
+      }
+      if (Math.random() < 0.05) {
+        statusEl.textContent = 'Connected';
+        setTimeout(function() {
+          statusEl.textContent = 'Encrypted';
+        }, 3000);
+      }
+    }, 2000);
+  }
+});
