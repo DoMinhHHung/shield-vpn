@@ -1418,3 +1418,14 @@ footer {
   .modal-body .review-cta { flex-direction: column; }
   .modal-body .review-cta .btn { width: 100%; justify-content: center; }
 }
+
+#connectionStatus {
+  color: #0EA5E9;
+  font-weight: 600;
+}
+#virtualLocation {
+  background: linear-gradient(135deg, #60A5FA, #A78BFA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
