@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletterForm();
   initTableOfContents();
   initScrollTop();
+  initBenefitCarousel();
 });
 
 function initFaqAccordion() {
@@ -139,7 +140,6 @@ function initScrollSpy() {
       setActive(visible[0].target.id);
     }
   }, {
-
     rootMargin: '-15% 0px -70% 0px',
     threshold: 0,
   });
@@ -167,5 +167,40 @@ function initScrollTop() {
 
   button.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+function initBenefitCarousel() {
+  const carousel = document.getElementById('benefitCarousel');
+  const track = document.getElementById('benefitTrack');
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+  const dots = Array.from(document.querySelectorAll('.carousel-dot'));
+  if (!carousel || !track || !dots.length) return;
+
+  const slideCount = dots.length;
+  let currentIndex = 0;
+
+  const goTo = (index) => {
+    currentIndex = (index + slideCount) % slideCount;
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    dots.forEach((dot, i) => {
+      const isActive = i === currentIndex;
+      dot.classList.toggle('active', isActive);
+      dot.setAttribute('aria-selected', String(isActive));
+    });
+  };
+
+  prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+  nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => goTo(i));
+  });
+
+  carousel.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(currentIndex + 1);
+    if (e.key === 'ArrowLeft') goTo(currentIndex - 1);
   });
 }

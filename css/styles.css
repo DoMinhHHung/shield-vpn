@@ -720,6 +720,85 @@ section {
   border: 1px solid var(--border);
 }
 
+.benefit-carousel {
+  overflow: hidden;
+}
+
+.benefit-track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.benefit-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.benefit-slide .featured-review {
+  margin: 0 4px;
+}
+
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.carousel-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-main);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.carousel-arrow:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.carousel-arrow:active {
+  transform: scale(0.95);
+}
+
+.carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 10px 16px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #CBD5E1;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carousel-dot:hover {
+  background: #94A3B8;
+}
+
+.carousel-dot.active {
+  background: var(--primary);
+  transform: scale(1.3);
+}
+
 .dashboard-wireframe {
   width: 100%;
   height: 300px;
@@ -1188,7 +1267,6 @@ footer {
   font-size: 14px;
 }
 
-
 .toc {
   position: fixed;
   left: 24px;
@@ -1279,7 +1357,6 @@ footer {
   border-left-color: var(--primary);
   background: rgba(37, 99, 235, 0.06);
 }
-
 
 .scroll-top {
   position: fixed;
